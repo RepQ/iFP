@@ -162,7 +162,7 @@ float	CalculaVidaMinima(Carta *cards)
 
 	ptr = cards;
 	i = 0;
-	vida_min = ptr->life;
+	vida_min = 101;
 	while (i++ < 10)
 	{
 		if ((ptr->life < vida_min) && ptr->life > 0)
@@ -184,7 +184,8 @@ float	CalculaVidaPromedio(Carta *cards)
 	vida_prom = 0;
 	while (i++ < 10)
 	{
-		vida_prom += ptr->life;
+		if (ptr->life > 0)
+			vida_prom += ptr->life;
 		ptr++;
 	}
 	vida_prom /= 10;
@@ -466,6 +467,8 @@ void	AttackPLG(Carta *cards)
 		DanyarPorEncimaDe(cards, 50, danyo);
 	else if (less_life > more_life)
 		DanyarPorDebajoDe(cards, 50, danyo);
+	else if (less_life == more_life)
+		DanyarCercanas(cards, 0, 10, danyo);
 	else
 		DanyarIgualesA(cards, 50, danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
