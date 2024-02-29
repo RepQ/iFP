@@ -66,7 +66,6 @@ void	IniciarCartas(Carta *cards)
 	while (++i < 10)
 	{
 		ptr->life = rand() % 100 + 1;
-		ptr->type = 0;
 		ptr++;
 	}
 	fill(cards);
@@ -125,7 +124,7 @@ void	MostrarCartas(Carta *cards)
 	printf("\n");
 	while (++i < 10)
 	{
-		if ((ptr + i)->life > 0)
+		if ((ptr + i)->life > 0.0f)
 			printf("\t%.2f", (ptr + i)->life);
 		else
 			printf("\tX");
@@ -143,7 +142,7 @@ float	CalculaVidaMaxima(Carta *cards)
 
 	ptr = cards;
 	i = 0;
-	vida_max = 0;
+	vida_max = 0.0f;
 	while (i++ < 10)
 	{
 		if (ptr->life > vida_max)
@@ -162,10 +161,10 @@ float	CalculaVidaMinima(Carta *cards)
 
 	ptr = cards;
 	i = 0;
-	vida_min = 101;
+	vida_min = CalculaVidaMaxima(cards);
 	while (i++ < 10)
 	{
-		if ((ptr->life < vida_min) && ptr->life > 0)
+		if ((ptr->life < vida_min) && ptr->life > 0.0f)
 			vida_min = ptr->life;
 		ptr++;
 	}
@@ -181,10 +180,10 @@ float	CalculaVidaPromedio(Carta *cards)
 
 	ptr = cards;
 	i = 0;
-	vida_prom = 0;
+	vida_prom = 0.0f;
 	while (i++ < 10)
 	{
-		if (ptr->life > 0)
+		if (ptr->life > 0.0f)
 			vida_prom += ptr->life;
 		ptr++;
 	}
@@ -358,7 +357,7 @@ void	AttackSLD(Carta *cards, int pos)
 	float	danyo;
 
 	danyo = (rand() % 5) + 1;
-	(cards + pos)->life -= danyo;
+	DanyarCercanas(cards, pos, 0, danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
 	Sleep(3000);
 }
@@ -366,21 +365,10 @@ void	AttackSLD(Carta *cards, int pos)
 /*	KINGSLAYER										*/
 void	AttackKNG(Carta *cards)
 {
-	Carta	*ptr;
 	float	danyo;
-	float	life_max;
-	int	i;
 
-	i = 0;
-	ptr = cards;
-	life_max = CalculaVidaMaxima(cards);
 	danyo = (rand() % 11) + 20;
-	while (i++ < 10)
-	{
-		if (ptr->life == life_max)
-			ptr->life -= danyo;
-		ptr++;
-	}
+	DanyarIgualesA(cards, CalculaVidaMaxima(cards), danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
 	Sleep(3000);
 }
@@ -388,21 +376,10 @@ void	AttackKNG(Carta *cards)
 /*	SCAVENGER										*/
 void	AttackSCV(Carta *cards)
 {
-	Carta	*ptr;
 	float	danyo;
-	float	life_min;
-	int	i;
 
-	i = 0;
-	ptr = cards;
-	life_min = CalculaVidaMinima(cards);
 	danyo = (rand() % 11) + 20;
-	while (i++ < 10)
-	{
-		if (ptr->life == life_min)
-			ptr->life -= danyo;
-		ptr++;
-	}
+	DanyarIgualesA(cards, CalculaVidaMinima(cards), danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
 	Sleep(3000);
 }
@@ -410,21 +387,10 @@ void	AttackSCV(Carta *cards)
 /*	PREDATOR										*/
 void	AttackPRD(Carta *cards)
 {
-	Carta	*ptr;
 	float	danyo;
-	float	life_prom;
-	int	i;
 
-	i = 0;
-	ptr = cards;
-	life_prom = CalculaVidaPromedio(cards);
 	danyo = (rand() % 6) + 5;
-	while (i++ < 10)
-	{
-		if (ptr->life > life_prom)
-			ptr->life -= danyo;
-		ptr++;
-	}
+	DanyarPorEncimaDe(cards, CalculaVidaPromedio(cards), danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
 	Sleep(3000);
 }
@@ -432,21 +398,10 @@ void	AttackPRD(Carta *cards)
 /*	DARWIN											*/
 void	AttackDRW(Carta *cards)
 {
-	Carta	*ptr;
 	float	danyo;
-	float	life_prom;
-	int	i;
 
-	i = 0;
-	ptr = cards;
-	life_prom = CalculaVidaPromedio(cards);
 	danyo = (rand() % 6) + 5;
-	while (i++ < 10)
-	{
-		if (ptr->life <= life_prom)
-			ptr->life -= danyo;
-		ptr++;
-	}
+	DanyarPorDebajoDe(cards, CalculaVidaPromedio(cards), danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
 	Sleep(3000);
 }
@@ -454,12 +409,10 @@ void	AttackDRW(Carta *cards)
 /*	PLAGUE											*/
 void	AttackPLG(Carta *cards)
 {
-	Carta	*ptr;
 	float	danyo;
 	int	less_life;
 	int	more_life;
 
-	ptr = cards;
 	danyo = (rand() % 6) + 5;
 	less_life = ContarPorDebajoDe(cards, 50);
 	more_life = ContarPorEncimaDe(cards, 50);
@@ -478,11 +431,9 @@ void	AttackPLG(Carta *cards)
 /*	DOOM											*/
 void	AttackDOO(Carta *cards)
 {
-	Carta	*ptr;
 	int	i;
 	float	danyo;
 
-	ptr = cards;
 	i = BuscarTrioMaximo(cards);
 	danyo = (rand() % 11) + 10;
 	DanyarCercanas(cards, i + 1, 1, danyo);
@@ -493,10 +444,8 @@ void	AttackDOO(Carta *cards)
 /*	WILDFIRE										*/
 void	AttackWLD(Carta *cards, int pos)
 {
-	Carta	*ptr;
 	float	danyo;
 
-	ptr = cards;
 	danyo = (rand() % 6) + 5;
 	DanyarCercanas(cards, pos, 2, danyo);
 	printf("Haz realizado %.2f de danyo", danyo);
