@@ -1,3 +1,10 @@
+/****************************************************************************************
+ *		SANTIAGO VERGARA RODRIGUEZ						*
+ *		PROGRAMACION C - C++							*
+ *		DAM - VIDEOJUEGOS Y OCIO DIGITAL CURSO 1				*
+ *		UF2-ACT1-PARTE3-ESTRUCTURAS Y MODULOS					*
+ * 											*
+ ****************************************************************************************/ 
 #include "Cartas.h"
 #include <stdio.h>
 #include <stdlib.h>
